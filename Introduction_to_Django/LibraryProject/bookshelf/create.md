@@ -1,9 +1,9 @@
 from bookshelf.models import Book
 
-# Create a new book instance
 
-book = Book(title="1984", author="George Orwell", publication_year=1949)
-book.save()
+# Creating a new Book instance using Book.objects.create
+book = Book.objects.create(title="1984", author="George Orwell", publication_year=1949)
+
 
 # Documenting in create.md
 
