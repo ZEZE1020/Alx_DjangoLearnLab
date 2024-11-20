@@ -1,13 +1,13 @@
 
 from django.shortcuts import render
 from django.views.generic.detail import DetailView
-from .models import Book
-from .models import Library
+from .models import Book, Library
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import permission_requred
 # Create your views here.
 
 def list_books(request):
@@ -83,3 +83,14 @@ def librarian_view(request):
 def member_view(request):
     return render(request, 'relationship_app/member_view.html')
 
+@permission_required('relationship_app.can_add_book', raise_exception=True)
+def add_book(request):
+    # Add book view logic
+
+@permission_required('relationship_app.can_change_book', raise_exception=True)
+def edit_book(request, book_id):
+    # Edit book view logic
+
+@permission_required('relationship_app.can_delete_book', raise_exception=True)
+def delete_book(request, book_id):
+    # Delete book view logic
