@@ -56,6 +56,9 @@ class SignUpView(generic.CreateView):
 def is_admin(user):
     return user.userprofile.role == 'Admin'
 
+def admin_view(request):
+   return render(request, 'admin_view.html')
+   
 def is_librarian(user):
     return user.userprofile.role == 'Librarian'
 
