@@ -43,6 +43,23 @@ class UserProfile(models.Model):
   def __str__(self):
     return self.user.username
 
+  def save(self, *args, **kwargs):
+    super().save(*args, **kwargs)
+    if self.role == 'Admin':
+      try:
+        content_type = ContentType.objects.get_for_model(UserProfile)
+        permission = Permission.object.get(
+          codename='can_view_access_admin_view',
+          content_type=content_type,
+      )
+
+        if self.user and not self.user.has_perm(permission.codename):
+          self.user.user_permissions.add(permission)
+      except ObjectDoesNotExist:
+        print("Permission 'can_view_access_admin_view' does not exist for this User Progile.")
+      except Exception as e:
+        print(f"An error occured: {e}")
+        
   @receiver(post_save, sender=User)
   def create_user_profile(self, sender, instance, created, **kwargs):
     if created:
