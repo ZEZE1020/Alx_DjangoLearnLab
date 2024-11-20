@@ -7,7 +7,7 @@ from django.views import generic
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import user_passes_test
-from django.contrib.auth.decorators import permission_requred
+from django.contrib.auth.decorators import permission_required
 # Create your views here.
 
 def list_books(request):
