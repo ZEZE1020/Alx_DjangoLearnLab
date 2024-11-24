@@ -73,6 +73,7 @@ WSGI_APPLICATION = 'LibraryProject.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+AUTH_USER_MODEL = 'users.CustomUser'
 
 DATABASES = {
     'default': {
