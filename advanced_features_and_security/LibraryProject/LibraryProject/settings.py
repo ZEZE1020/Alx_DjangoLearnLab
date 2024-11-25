@@ -27,7 +27,18 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+#Security settings
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_CONTENT_TYPE_NOSNIFF = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
+#
+SECURE_SSL_REDIRECT = True 
+SECURE_HSTS_SECONDS = 31536000 
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True 
+SECURE_HSTS_PRELOAD = True
 # Application definition
 
 INSTALLED_APPS = [
@@ -38,8 +49,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bookshelf',
-    'relationship_app'
+    'relationship_app',
+    'csp',
+    'django_csp',
 ]
+CSP_DEFAULT_SRC = ("'self'",) 
+CSP_STYLE_SRC = ("'self'", 'https://maxcdn.bootstrapcdn.com') 
+CSP_SCRIPT_SRC = ("'self'", 'https://ajax.googleapis.com')
+CSP_IMG_SRC = ("'self'", 'https://maxcdn.bootstrapcdn.com')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -49,6 +66,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'csp.middleware.CSPMiddleware',
 ]
 
 AUTH_USER_MODEL = 'bookshelf.CustomUser'
