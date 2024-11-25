@@ -17,10 +17,10 @@ class CustomUserAdmin(UserAdmin):
     fieldsets = UserAdmin.fieldsets + (
         (None, {'fields': ('date_of_birth', 'profile_photo')}),
         )
-        add_fieldsets = UserAdmin.add_fielssets + (
+    add_fieldsets = UserAdmin.add_fieldsets + (
             (None, {'fiels': ('date_of_birth', 'profile_photo')})
         )
-    )
+    
 
 # Register the Book model with the custom admin configuration
 admin.site.register(Book, BookAdmin)

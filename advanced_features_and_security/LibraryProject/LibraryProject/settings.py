@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bookshelf',
     'relationship_app'
 ]
 
@@ -49,6 +50,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+AUTH_USER_MODEL = 'bookshelf.CustomUser'
 
 ROOT_URLCONF = 'LibraryProject.urls'
 
@@ -73,7 +76,7 @@ WSGI_APPLICATION = 'LibraryProject.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-AUTH_USER_MODEL = 'bookshelf.CustomUser'
+
 
 DATABASES = {
     'default': {

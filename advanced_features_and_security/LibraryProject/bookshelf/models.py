@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser 
 from django.db import models
+from .managers import CustomUserManager
 
 # Create your models here.
 class CustomUser(AbstractUser):
@@ -10,8 +11,22 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
-        
-class CustomUserManager(BaseUserManager): 
+
+class ExampleModel(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+
+    class Meta:
+        permissions = [
+            ("can_view", "Can view items"),
+            ("can_create", "Can create items"),
+            ("can_edit", "Can edit items"),
+            ("can_delete", "Can delete items"),
+        ]
+        def __str__(self):
+            return self.name
+
+class CustomUserManager(CustomUserManager): 
     def create_user(self, email, date_of_birth, password=None, **extra_fields): 
         if not email: 
             raise ValueError('The Email field must be set') 
@@ -30,7 +45,7 @@ class CustomUserManager(BaseUserManager):
             if extra_fields.get('is_superuser') is not True: 
                 raise ValueError('Superuser must have is_superuser=True.') 
                 
-            return self.create_user(email, date_of_birth, password, 
+            return self.create_user(email, date_of_birth, password,)
 
 class Book(models.Model):
     title = models.CharField(max_length=200)
