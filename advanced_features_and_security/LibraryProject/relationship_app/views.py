@@ -90,7 +90,7 @@ def add_book(request):
 @permission_required('relationship_app.can_change_book', raise_exception=True)
 def edit_book(request, book_id):
    pass
-        
+        #edit book list
 
 @permission_required('relationship_app.can_delete_book', raise_exception=True)
 def delete_book(request, book_id):
