@@ -80,41 +80,52 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
   return self.request.user
 
 
-@login_required
-def add_comment(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.author = request.user
-            comment.post = post
-            comment.save()
-            return redirect('post-detail', pk=post.pk)
-    else:
-        form = CommentForm()
-    return render(request, 'blog/add_comment.html', {'form': form})
+class PostDetailView(DetailView):
+    model = Post
+    template_name = 'blog/post_detail.html'
 
-@login_required
-def edit_comment(request, pk):
-    comment = get_object_or_404(Comment, pk=pk)
-    if request.user != comment.author:
-        return redirect('post-detail', pk=comment.post.pk)
-    if request.method == 'POST':
-        form = CommentForm(request.POST, instance=comment)
-        if form.is_valid():
-            form.save()
-            return redirect('post-detail', pk=comment.post.pk)
-    else:
-        form = CommentForm(instance=comment)
-    return render(request, 'blog/edit_comment.html', {'form': form})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['comments'] = self.object.comments.all()
+        context['form'] = CommentForm()
+        return context
 
-@login_required
-def delete_comment(request, pk):
-    comment = get_object_or_404(Comment, pk=pk)
-    if request.user != comment.author:
-        return redirect('post-detail', pk=comment.post.pk)
-    if request.method == 'POST':
-        comment.delete()
-        return redirect('post-detail', pk=comment.post.pk)
-    return render(request, 'blog/delete_comment.html', {'comment': comment})
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/add_comment.html'
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        form.instance.post_id = self.kwargs['pk']
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return self.object.post.get_absolute_url()
+
+class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/edit_comment.html'
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author
+
+    def get_success_url(self):
+        return self.object.post.get_absolute_url()
+
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Comment
+    template_name = 'blog/delete_comment.html'
+
+    def get_success_url(self):
+        return self.object.post.get_absolute_url()
+
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author
