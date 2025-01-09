@@ -10,7 +10,24 @@
     <h1>{{ post.title }}</h1>
     <p>{{ post.content }}</p>
     <p><small>Author: {{ post.author }} | Published on: {{ post.published_date }}</small></p>
-    <a href="{% url 'post-update' post.pk %}">Edit</a>
-    <a href="{% url 'post-delete' post.pk %}">Delete</a>
+
+    <h2>Comments</h2>
+    {% for comment in comments %}
+        <div>
+            <p>{{ comment.content }}</p>
+            <p><small>Author: {{ comment.author }} | Posted on: {{ comment.created_at }}</small></p>
+            {% if comment.author == user %}
+                <a href="{% url 'edit-comment' comment.pk %}">Edit</a>
+                <a href="{% url 'delete-comment' comment.pk %}">Delete</a>
+            {% endif %}
+        </div>
+    {% endfor %}
+
+    <h2>Add a comment</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Post Comment</button>
+    </form>
 </body>
 </html>
