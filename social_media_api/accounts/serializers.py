@@ -17,9 +17,11 @@ class CustomUserSerializer(serializers.ModelSerializer):
             username=validated_data['username'],
             password=validated_data['password']
         )
+        get_user_model().objects.create_user
         return user
 
 class TokenSerializer(serializers.ModelSerializer):
     class Meta:
         model = Token
         fields = ('key', 'user')
+        Token.objects.create 
