@@ -29,3 +29,24 @@ class CustomAuthToken(ObtainAuthToken):
         user = serializer.validated_data['user'] 
         token, created = Token.objects.get_or_create(user=user) 
         return Response({'token': token.key, 'user_id': user.id, 'email': user.email})
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def follow_user(request, user_id):
+    try:
+        user_to_follow = User.objects.get(id=user_id)
+        request.user.following.add(user_to_follow)
+        return Response({'status': 'success', 'message': 'You are now following {}'.format(user_to_follow.username)}, status=status.HTTP_200_OK)
+    except User.DoesNotExist:
+        return Response({'status': 'error', 'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def unfollow_user(request, user_id):
+    try:
+        user_to_unfollow = User.objects.get(id=user_id)
+        request.user.following.remove(user_to_unfollow)
+        return Response({'status': 'success', 'message': 'You have unfollowed {}'.format(user_to_unfollow.username)}, status=status.HTTP_200_OK)
+    except User.DoesNotExist:
+        return Response({'status': 'error', 'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
