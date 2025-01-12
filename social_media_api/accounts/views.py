@@ -43,6 +43,7 @@ class UserListView(generics.GenericAPIView):
 
 class ProfileView(APIView):
     permission_classes = [IsAuthenticated]
+    permissions.IsAuthenticated
 
     def get(self, request, *args, **kwargs):
         user = request.user
