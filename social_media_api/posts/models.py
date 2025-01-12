@@ -2,6 +2,7 @@ from django.db import models
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
+from rest_framework import generics
 # Create your models here.
 
 class Post(models.Model):
@@ -23,3 +24,5 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'Comment by {self.author} on {self.post}'
+
+   

@@ -1,3 +1,4 @@
+from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -6,7 +7,12 @@ from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from .serializers import CustomUserSerializer, TokenSerializer
 from django.http import HttpResponse
-from django_restframework.views import APIView
+from rest_framework.views import APIView
+from django.contrib.auth import get_user_model
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework import status
+
+CustomUser = get_user_model()
 
 
 def home(request):
@@ -43,7 +49,6 @@ class UserListView(generics.GenericAPIView):
 
 class ProfileView(APIView):
     permission_classes = [IsAuthenticated]
-    permissions.IsAuthenticated
 
     def get(self, request, *args, **kwargs):
         user = request.user

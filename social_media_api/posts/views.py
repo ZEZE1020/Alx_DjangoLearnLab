@@ -1,7 +1,17 @@
+from rest_framework import generics, permissions
 from django.shortcuts import render
 from rest_framework import viewsets, permissions, filters
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+from notifications.models import Notification
+from .serializers import PostSerializer
+
+
+
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
@@ -31,3 +41,32 @@ class FeedView(generics.ListAPIView):
         followed_users = user.following.all()
         return Post.objects.filter(author__in=followed_users).order_by('-created_at')
         #Post.objects.filter(author__in=following_users).order_by
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def like_post(request, post_id):
+    try:
+        post = Post.objects.get(id=post_id)
+        like, created = Like.objects.get_or_create(post=post, user=request.user)
+        if created:
+            Notification.objects.create(
+                recipient=post.author,
+                actor=request.user,
+                verb='liked your post',
+                target=post
+            )
+            return Response({'status': 'success', 'message': 'Post liked.'}, status=status.HTTP_200_OK)
+        return Response({'status': 'error', 'message': 'You have already liked this post.'}, status=status.HTTP_400_BAD_REQUEST)
+    except Post.DoesNotExist:
+        return Response({'status': 'error', 'message': 'Post not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def unlike_post(request, post_id):
+    try:
+        post = Post.objects.get(id=post_id)
+        Like.objects.filter(post=post, user=request.user).delete()
+        return Response({'status': 'success', 'message': 'Post unliked.'}, status=status.HTTP_200_OK)
+    except Post.DoesNotExist:
+        return Response({'status': 'error', 'message': 'Post not found.'}, status=status.HTTP_404_NOT_FOUND)
