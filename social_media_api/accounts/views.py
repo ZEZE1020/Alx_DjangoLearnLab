@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from .serializers import CustomUserSerializer, TokenSerializer
 from django.http import HttpResponse
+from django_restframework.views import APIView
 
 
 def home(request):
@@ -29,6 +30,26 @@ class CustomAuthToken(ObtainAuthToken):
         user = serializer.validated_data['user'] 
         token, created = Token.objects.get_or_create(user=user) 
         return Response({'token': token.key, 'user_id': user.id, 'email': user.email})
+
+
+
+class UserListView(generics.GenericAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomUserSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
+class ProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        return Response({
+            'username': user.username,
+            'email': user.email
+        })
 
 
 @api_view(['POST'])
