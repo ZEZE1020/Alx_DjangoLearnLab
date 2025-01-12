@@ -14,7 +14,7 @@ from pathlib import Path
 import os 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-import os
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
@@ -106,12 +106,15 @@ WSGI_APPLICATION = 'social_media_api.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+'default': { 
+    'ENGINE': 'django.db.backends.postgresql', 
+    'NAME': 'SocialMediaApi', 
+    'USER': 'ogembo', 
+    'PASSWORD': '', 
+    'HOST': 'localhost', # Set to 'localhost' if running locally 
+    'PORT': '5432', # Default PostgreSQL port 
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
