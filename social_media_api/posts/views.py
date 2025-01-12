@@ -49,7 +49,7 @@ class FeedView(generics.ListAPIView):
 def like_post(request, post_id):
     generics.get_object_or_404(Post, pk=pk)
     post = get_object_or_404(Post, id=post_id)  # Use get_object_or_404 to ensure the post exists
-    like, created = Like.objects.get_or_create(user=request.user, post=post,)  # Ensure Like.objects.get_or_create is used
+    Like.objects.get_or_create(user=request.user, post=post)  # Ensure Like.objects.get_or_create is used
     if created:
         Notification.objects.create(
             recipient=post.author,
